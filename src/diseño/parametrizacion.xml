@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Juego nombre="battleZone" version="1.0">
+	<Juego idJuego>		
+		<idJuego></idJuego>
+		<jugador>
+			<idJugador></idJugador>
+			<nombre></nombre>
+			<tipoJugador></tipoJugador>
+			<unidades>				
+				<infanteria posX posY ></infanteria>
+				<lancero>
+				</lancero>
+			</unidades>
+		</jugador>
+	</Juego>
+</Juego>

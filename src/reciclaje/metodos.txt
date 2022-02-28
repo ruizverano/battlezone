@@ -1,0 +1,799 @@
+//Cuadro.Cuadro()
+
+if(!pisoObstaculo){	
+					
+					/*if(pisoLibre && !Control.reclutar && mapa.getSeleccion()){
+						//mapa.setSeleccion(mapa.getSeleccion());
+						System.out.println("estado seleccion (v)" + mapa.getSeleccion());
+						//mapa.seleccion(idX, idY);
+					}
+					else{
+						System.out.println("estado seleccion (f)" + mapa.getSeleccion());
+					}
+					
+					if(!pisoOcupado && Control.reclutar){
+							crearUnidad(Control.nombreUnidad);
+					}else{
+						if(Control.reclutar){
+							JOptionPane.showMessageDialog(null,"Este espacio ya está ocupado","Ocupado",JOptionPane.INFORMATION_MESSAGE);
+						}
+						else if(pisoOcupado){														
+							seleccionarUnidad();
+						}
+					}
+					System.out.println("Cuadro de Piso Libre (x,y)= (" +idX+ ","+idY+" )");// + " CoordenadaX: " + coordenada.getX() + " CoordenadaY: "	+ coordenada.getY());					
+					//clickear(click);
+				}//else if(unidad.getSeleccionado()){	}
+				else{
+					System.out.println("Cuadro de Piso Obstaculo (x,y)= (" +idX+ ","+idY+" )");// + " CoordenadaX: " + coordenada.getX() + " CoordenadaY: "	+ coordenada.getY());
+					JOptionPane.showMessageDialog(null,"Este espacio está obstaculizado","Obstaculizado",JOptionPane.INFORMATION_MESSAGE);
+			////////////////////
+			
+//Cuadro.paint()			
+		//Graphics2D grafico2D = (Graphics2D) g;
+		
+		/*
+		grafico2D.setColor(color);
+		grafico2D.fillRect(this.posX, this.posY, this.tamañoAncho, this.tamañoAlto);
+
+		grafico2D.setColor(Color.BLACK);
+
+		grafico2D.drawRect(this.posX, this.posY, this.tamañoAncho, this.tamañoAlto);
+		*/		
+				
+//Unidad.validarAvance
+public boolean validarAvance(int posX, int posY){
+	  System.out.println("pos actual ("+this.posX+","+this.posY+")");
+	  System.out.println("pos recibido ("+posX+","+posY+")");
+	  	  
+	  if(
+		(this.posY>posY && this.posY-posY<=this.desplazamiento && this.posX==posX) ||//movimiento izquierda
+		(this.posY<posY && posY-this.posY<=this.desplazamiento && this.posX==posX)||//movimiento derecha
+		(this.posX>posX && this.posX-posX<=this.desplazamiento && this.posY==posY)||//movimiento arriba
+		(this.posX<posX && posX-this.posX<=this.desplazamiento && this.posY==posY)||//movimiento abajo
+		
+		(this.posY>posY && this.posY-posY<=this.desplazamiento && this.posX>posX && this.posX-posX<=this.desplazamiento)||
+		(this.posX<posX && posX-this.posX<=this.desplazamiento && this.posY<posY && posY-this.posY<=this.desplazamiento)||
+		
+		(this.posX>posX && this.posX-posX<=this.desplazamiento && this.posX>posX && this.posX-posX<=this.desplazamiento)||
+		(this.posY>posY && this.posY-posY<=this.desplazamiento && this.posX<posX && posX-this.posX<=this.desplazamiento)) 			  
+	  {
+		  System.out.println("valido avance");
+		  return true;
+	  }else{
+		  System.out.println("no valido avance");
+		  return false;	
+	  }
+  }		
+ //Unidad.validarAtaque 
+ public boolean validarAtaque(Unidad unidad){
+	  
+	  int posX_Actual=this.posX;
+	  int posY_Actual=this.posY;
+	  int posX_Enemigo=unidad.getPosX();
+	  int posY_Enemigo=unidad.getPosY();
+	  int alcance = this.alcanceFuego;
+	  
+	  System.out.println("pos actual ("+posX_Actual+","+posY_Actual+")");
+	  System.out.println("pos recibido ("+posX_Enemigo+","+posY_Enemigo+")");	  
+	  	  
+	  if(
+		(posY_Actual>posY_Enemigo && posY_Actual-posY_Enemigo<=alcance && posX_Actual==posX_Enemigo) ||//movimiento izquierda
+		(posY_Actual<posY_Enemigo && posY_Enemigo-posY_Actual<=alcance && posX_Actual==posX_Enemigo)||//movimiento derecha
+		(posX_Actual>posX_Enemigo && posX_Actual-posX_Enemigo<=alcance && posY_Actual==posY_Enemigo)||//movimiento arriba
+		(posX_Actual<posX_Enemigo && posX_Enemigo-posX_Actual<=alcance && posY_Actual==posY_Enemigo))//movimiento abajo		  
+	  	  {
+		  	System.out.println("valido alcance lateral");
+		  	return true;		  	
+	  	  }		
+		
+	  else if(
+			  (posY_Actual>posY_Enemigo && posY_Actual-posY_Enemigo<=alcance && posX_Actual>posX_Enemigo && posX_Actual-posX_Enemigo<=alcance)||
+			  (posX_Actual<posX_Enemigo && posX_Enemigo-posX_Actual<=alcance && posY_Actual<posY_Enemigo && posY_Enemigo-posY_Actual<=alcance)||		
+			  (posX_Actual>posX_Enemigo && posX_Actual-posX_Enemigo<=alcance && posX_Actual>posX_Enemigo && posX_Actual-posX_Enemigo<=alcance)||
+			  (posY_Actual>posY_Enemigo && posY_Actual-posY_Enemigo<=alcance && posX_Actual<posX_Enemigo && posX_Enemigo-posX_Actual<=alcance)) 			  
+	  {
+		  System.out.println("valido ataque diagonal");
+		  
+		  return true;
+	  }else{
+		  System.out.println("no valido ataque, fuera del alcance de fuego");
+		  return false;	
+	  }
+  }
+  
+  //Unidad.avance --- obstaculos
+  /*
+	  //obstaculos
+	  //Arriva-izquierda--corregir
+	  if(posX_Actual>posX_Nuevo && posY_Actual>posY_Nuevo){
+		  System.out.println("Movimiento arriva-izquierda");
+		  for (int i = posX_Actual-1; i > posX_Nuevo; i--) {
+			for (int j = posY_Actual-1; j > posY_Nuevo; j--) {
+				if(!Mapa.getCuadro()[j][i].getPisoLibre()&&(posX_Actual-posX_Nuevo)==(posY_Actual-posY_Nuevo)){					
+					System.out.println("Obstaculo encontrado en ("+ Mapa.getCuadro()[j][i].getIdX()+","+Mapa.getCuadro()[j][i].getIdY());
+					return false;
+				}
+			}
+		}
+	  }
+	  //Abajo izquierda
+	  else if(posX_Actual>posX_Nuevo && posY_Actual<posY_Nuevo){
+		  System.out.println("Movimiento abajo-izquierda");
+		  for (int i = posX_Actual-1; i > posX_Nuevo; i--) {
+			for (int j = posY_Actual+1; j < posY_Nuevo; j++) {
+				if(!Mapa.getCuadro()[j][i].getPisoLibre()){					
+					System.out.println("Obstaculo encontrado en ("+ Mapa.getCuadro()[j][i].getIdX()+","+Mapa.getCuadro()[j][i].getIdY());
+					return false;
+				}
+			}
+		}
+	  }
+	  //Abajo derecha
+	  else if(posX_Actual<posX_Nuevo && posY_Actual<posY_Nuevo){
+		  System.out.println("Movimiento abajo-derecha");
+		  for (int i = posX_Actual+1; i < posX_Nuevo; i++) {
+			for (int j = posY_Actual+1; j < posY_Nuevo; j++) {
+				if(!Mapa.getCuadro()[j][i].getPisoLibre()){					
+					System.out.println("Obstaculo encontrado en ("+ Mapa.getCuadro()[j][i].getIdX()+","+Mapa.getCuadro()[j][i].getIdY());
+					return false;
+				}
+			}
+		}
+	  }
+	//Arriba derecha
+	  else if(posX_Actual<posX_Nuevo && posY_Actual>posY_Nuevo){
+		  System.out.println("Movimiento arriva-derecha");
+		  for (int i = posX_Actual+1; i < posX_Nuevo; i++) {
+			for (int j = posY_Actual-1; j > posY_Nuevo; j--) {
+				if(!Mapa.getCuadro()[j][i].getPisoLibre()){					
+					System.out.println("Obstaculo encontrado en ("+ Mapa.getCuadro()[j][i].getIdX()+","+Mapa.getCuadro()[j][i].getIdY());
+					return false;
+				}
+			}
+		}
+	  }
+	  */
+	  //Cuadro.accionarClick ---mover
+	  	System.out.println("funcion mover() desde " + Mapa.getUnidadSeleccionada().getPosX() + "," + Mapa.getUnidadSeleccionada().getPosY());
+		//Mapa.quitar(Mapa.getUnidadSeleccionada().getPosY(),Mapa.getUnidadSeleccionada().getPosX());//por alguna extraña razon x,y se invierten
+		
+		//Mapa.getUnidadSeleccionada().avanzar(this.idX, idY);
+		Unidad unidad=Mapa.getUnidadSeleccionada();
+		
+		for (int i = unidad.getPosX()+1; i < idX+1; i++) {
+			//Mapa.quitar(Mapa.getUnidadSeleccionada().getPosY(),Mapa.getUnidadSeleccionada().getPosX());//por alguna extraña razon x,y se invierten
+			unidad.avanzar(i, idY);
+			Mapa.getCuadro()[idY][i].ocupar(unidad);
+			
+			//ocupar(unidad);						
+		}
+		
+		//ocupar(Mapa.getUnidadSeleccionada());	
+		
+		Mapa.setSeleccion(false);
+		//mapa.setUnidaSeleccionada(null);
+		
+		//Cuadro.accionarClick ---atacar
+						
+							if(Mapa.getUnidadSeleccionada().validarAtaque(this.unidad)){
+								
+								System.out.println("funcion de atacar()");
+								
+								Mapa.getUnidadSeleccionada().atacar(this.unidad);
+								
+								System.out.println("Salud de esta unidad "+this.unidad.getSalud());																																						
+								
+								if(this.unidad.getSalud()<1){
+									Mapa.quitar(this.unidad.getPosX(),this.unidad.getPosY());
+								}								
+																								
+								Mapa.setSeleccion(false);
+								
+								}else{
+									System.out.println("ataque no permitido");
+									Mapa.setSeleccion(false);
+								} 	
+								
+//Lineas de Cuadro.setImgPiso
+//this.imgPiso= new ImageIcon(getClass().getResource(rutaImagen)).getImage();
+		Image im= new ImageIcon(getClass().getResource(rutaImagen)).getImage();
+		try {
+			this.imgPiso=ImageIO.read(getClass().getResourceAsStream(rutaImagen));
+		} catch (Exception e) {
+			System.out.println("ERROR EN CARGAR IMAGEN "+e.toString());
+		}													
+		
+//
+
+/* en Clase Mapa: FUNCION PARA MOSTRAR POSIBLES CAMINOS
+public static void mostrarLibre(){
+		
+		System.out.println("funcion mostrar() desde " + Mapa.getUnidadSeleccionada().getPosX() + "," + Mapa.getUnidadSeleccionada().getPosY());
+		
+		Unidad unidad=getUnidadSeleccionada();
+		
+		int idX=unidad.getPosX()+5;
+		int idY=unidad.getPosY()+5;
+				
+		for (int op = 1; op < 6; op++) {
+			switch (op) {
+			case 1:			
+				System.out.println("entro a op1");
+				for (int i = unidad.getPosY()-1; i > idY-1; i--) {						
+					if(cuadro[i][idX].getPisoLibre()){					
+						cuadro[i][idX].setImgPiso("pisoLibre7");						
+					}else{
+						i=idY;
+					}														
+				}			
+				break;
+			case 2:			
+				System.out.println("entro a op2");
+				for (int i = unidad.getPosY()+1; i < idY+1; i++) {				
+					if(cuadro[i][idX].getPisoLibre()){					
+						cuadro[i][idX].setImgPiso("pisoLibre7");
+					}else{
+						i=idY;
+					}														
+				}			
+				break;
+			case 3:			
+				System.out.println("entro a op3");
+				for (int i = unidad.getPosX()-1; i > idX-1; i--) {				
+					if(cuadro[idY][i].getPisoLibre()){					
+						cuadro[idY][i].setImgPiso("pisoLibre7");
+					}else{
+						i=idX;
+					}														
+				}			
+				break;				
+			case 4:
+				System.out.println("entro a op4");
+				for (int i = unidad.getPosX()+1; i < idX+1; i++) {				
+					if(cuadro[idY][i].getPisoLibre()){					
+						cuadro[idY][i].setImgPiso("pisoLibre7");
+					}else{
+						i=idX;
+					}														
+				}			
+				break;
+			case 5:
+				System.out.println("entro a op5");
+				if(unidad.getPosX()<idX && unidad.getPosY()>idY){
+					for (int i = unidad.getPosX()+1; i < idX+1; i++) {
+						for (int j = unidad.getPosY()-1; j > idY-1; j--) {						
+							if(cuadro[j][i].getPisoLibre()){														
+								cuadro[j][i].setImgPiso("pisoLibre7");
+								i++;
+							}else{
+								j=idY;
+								i=idX;
+							}
+						}
+																				
+					}
+				}
+				else if(unidad.getPosX()>idX && unidad.getPosY()>idY){
+					
+					for (int i = unidad.getPosX()-1; i > idX-1; i--) {
+						for (int j = unidad.getPosY()-1; j > idY-1; j--) {						
+							if(cuadro[j][i].getPisoLibre()){														
+								cuadro[j][i].setImgPiso("pisoLibre7");
+								i--;
+							}else{
+								j=idY;
+								i=idX;
+							}
+						}
+																				
+					}
+				}
+				else if(unidad.getPosX()>idX && unidad.getPosY()<idY){
+					for (int i = unidad.getPosX()-1; i > idX-1; i--) {
+						for (int j = unidad.getPosY()+1; j < idY+1; j++) {						
+							if(cuadro[j][i].getPisoLibre()){														
+								cuadro[j][i].setImgPiso("pisoLibre7");
+								i--;
+							}else{
+								j=idY;
+								i=idX;
+							}
+						}
+																				
+					}
+				}
+				else if(unidad.getPosX()<idX && unidad.getPosY()<idY){
+					for (int i = unidad.getPosX()+1; i < idX+1; i++) {
+						for (int j = unidad.getPosY()+1; j < idY+1; j++) {						
+							if(cuadro[j][i].getPisoLibre()){														
+								cuadro[j][i].setImgPiso("pisoLibre7");
+								i++;
+							}else{
+								j=idY;
+								i=idX;
+							}
+						}
+																				
+					}
+				}			
+				break;
+
+			default:
+				break;
+			}								
+			Mapa.setSeleccion(false);
+		}						
+	}
+*/	
+
+	//esto puede ser una clace y se puede elegir el numero de obstaculos en el mapa :D
+	/*
+	public void obstaculizarPisos(){
+		int[] obstaculosX = new int[200];
+		int[] obstaculosY = new int[200];
+		
+		Random rn = new Random();
+
+		for (int i = 0; i < obstaculosX.length; i++) {
+			obstaculosX[i]= rn.nextInt(20);			
+			obstaculosY[i]= rn.nextInt(20);
+			System.out.println("pos" + i+ "obsX = "+obstaculosX[i]);
+			System.out.println("----------------------------------");
+			System.out.println("pos" + i+ "obsY = "+obstaculosY[i]);
+		}
+		
+		for (int i = 0; i < obstaculosY.length; i++) {
+			cuadro[obstaculosX[i]][obstaculosY[i]].setImgPiso("obstaculo1");
+			cuadro[obstaculosX[i]][obstaculosY[i]].setPisoObstaculo(true);
+			//cuadro1[i][j].setImgPiso("obstaculo1");
+		}
+		int contador=0;
+		for (int k = 0; k < cuadro.length; k++) {
+			for (int k2 = 0; k2 < cuadro.length; k2++) {
+				pnlCampo.add(cuadro[k][k2]);				
+			}
+		}
+		
+		for (int k = 0; k < cuadro.length; k++) {
+			for (int k2 = 0; k2 < cuadro.length; k2++) {
+				if(cuadro[k][k2].getPisoObstaculo()){
+					contador++;
+				}
+			}
+		}
+		System.out.println("pisos con obstaculos " +contador );
+		
+	}
+	*/	
+	
+	/* accion click de clase cuadro
+	public void accionarClick(){
+		
+		if(Control.getReclutar()){			
+			if(pisoLibre){											
+				crearUnidad(Control.nombreUnidad);
+				Control.setReclutar(false);
+				Juego.cambiarTurno();
+			}else{
+				if(pisoObstaculo){
+					Control.lblInfoClicks.setText("Zona obztaculizada...");
+					System.out.println("piso obstaculo "+"("+this.getIdX()+","+getIdY()+")");
+				}else{
+					if(pisoOcupado){
+						Control.lblInfoClicks.setText("Esta zona ya esta ocupada...");
+						System.out.println("piso ocupado "+"("+this.getIdX()+","+getIdY()+")");
+					}else{
+						System.out.println("no existe");
+					}
+				}
+			}
+		}else{
+			if(pisoLibre){
+				if(Mapa.getSeleccion()){ 
+					if(Mapa.getUnidadSeleccionada().getIdJugador()==Juego.jugadorEnTurno.getIdJugador()){
+						//Control.lblInfoClicks.setText("Desplazaste...");
+						//MOVER
+						int direccionMovimiento=Mapa.getUnidadSeleccionada().validarAvance(this.idX, this.idY);						
+						Hilo hilo = new Hilo("mover", this.idX, this.idY, direccionMovimiento);					
+						hilo.start();						
+					}else{
+						JOptionPane.showMessageDialog(null,"No es tu turno",
+								"Error",JOptionPane.ERROR_MESSAGE);
+						Mapa.setSeleccion(false);
+					}
+				}else{
+					Control.lblInfoClicks.setText("Zona despejada...");
+					System.out.println("piso libre "+"("+this.getIdX()+","+getIdY()+")");
+					Mapa.setSeleccion(false);
+				}
+			}else{
+				if(pisoObstaculo){
+					Control.lblInfoClicks.setText("Zona obztaculizada...");
+					System.out.println("piso obstaculo "+"("+this.getIdX()+","+getIdY()+")");
+				}else{
+					if(pisoOcupado){							
+						//Control.lblInfoClicks.setText("Atacaste!");
+							if(Mapa.getSeleccion()){
+								if(Mapa.getUnidadSeleccionada().getIdJugador()==Juego.jugadorEnTurno.getIdJugador()){
+									if(this.unidad.getIdJugador()!=Mapa.getUnidadSeleccionada().getIdJugador()){
+										int direccionFuego=Mapa.getUnidadSeleccionada().validarAtaque(this.unidad);							
+										Mapa.disparar(this.idX, this.idY, direccionFuego);
+									}else{
+										JOptionPane.showMessageDialog(null,"Estas tratando de auto-atacarte!",
+												"Error",JOptionPane.ERROR_MESSAGE);
+									}
+								}
+								else{
+									JOptionPane.showMessageDialog(null,"No es tu turno",
+											"Error",JOptionPane.ERROR_MESSAGE);
+									Mapa.setSeleccion(false);
+								}
+							}else{
+								Control.lblInfoClicks.setText("Unidad seleccionada...");
+								seleccionarUnidad();
+							}						
+					}else{
+						System.out.println("no existe");
+					}
+				}
+			}
+		}
+		JugarContraHumano.servidor.enviarObjeto(this);
+	}
+	
+	*/
+	
+	metodos clase Juego 20 11 2016
+	
+		/*
+  JFrame frmJuego;
+  JPanel pnlJuego;
+  
+  JButton btnJugador1;
+  JButton btnJugador2;
+  
+  JButton btnInicioJugadores;
+  JButton btnSorteoTurno;
+	*/
+	
+		  
+	 /* 
+	  jugador= new Jugador[2];	  	
+	  
+	  frmJuego= new JFrame("Juego");
+	  pnlJuego = new JPanel();
+	  
+	  btnJugador1= new JButton("Jugador1");
+	  btnJugador2= new JButton("Jugador2");
+	  
+	  btnInicioJugadores= new JButton("Iniciar Jugadores");
+	  btnSorteoTurno= new JButton("SortearTurno");	  
+	  
+	  //pnlJuego.add(btnJugador1);	  
+	  //pnlJuego.add(btnJugador2);
+	  
+	  pnlJuego.add(btnInicioJugadores);
+	  pnlJuego.add(btnSorteoTurno);	  
+	  
+	  frmJuego.setSize(200, 200);
+	  frmJuego.setVisible(true);
+	  
+	  frmJuego.add(pnlJuego);
+	  btnSorteoTurno.setEnabled(false);
+	  acciones();
+	  */
+	  
+	  /*  
+public void acciones(){
+	btnJugador1.addActionListener(new ActionListener() {			
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			jugador[0]= new Humano("cristian", 1, true, true, 0,500, "127.0.0.1");
+			new Control(jugador[0]);
+		}
+	});
+	
+	btnJugador2.addActionListener(new ActionListener() {			
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			jugador[1]= new Humano("Ingrid", 2, true, true, 0,500, "127.0.0.1");
+			new Control(jugador[1]);
+		}
+	});
+	
+	btnInicioJugadores.addActionListener(new ActionListener() {			
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			jugador[0]= new Humano("cristian", 1, true, false, 0,500, "127.0.0.1");		
+			
+			//new Control(jugador[0]);
+			
+			jugador[1]= new Humano("Ingrid", 2, true, false, 0,500, "127.0.0.1");
+			
+			//new Control(jugador[1]);			
+			
+			btnSorteoTurno.setEnabled(true);
+		}
+	});
+	
+	btnSorteoTurno.addActionListener(new ActionListener() {			
+		@Override
+		public void actionPerformed(ActionEvent e) {			
+			Random rn = new Random();
+			int sorteo = rn.nextInt(jugador.length);
+			
+			JOptionPane.showMessageDialog(null,"Empieza el Jugador: "+jugador[sorteo].getNombre(),
+					"Sorteo de turno",JOptionPane.INFORMATION_MESSAGE);
+			
+			jugador[sorteo].setTurno(true);			
+			jugador[sorteo].getControl().setHabilitarControl(true);			
+			jugadorEnTurno=jugador[sorteo];			
+		
+		}
+	});	
+}
+*/
+
+public static void cambiarTurno(){
+	/*System.out.println("turneando jugadores");
+		if(jugador[0].getTurno()){				
+			jugadorEnTurno=jugador[1];
+			System.out.println("esta de turno el jugador "+jugadorEnTurno.getNombre());
+			jugador[0].setTurno(false);
+			jugador[0].getControl().setHabilitarControl(false);			
+			jugador[1].setTurno(true);
+			jugador[1].getControl().setHabilitarControl(true);
+		}else{
+			jugadorEnTurno=jugador[0];
+			System.out.println("esta de turno el jugador "+jugadorEnTurno.getNombre());
+			jugador[1].setTurno(false);
+			jugador[1].getControl().setHabilitarControl(false);
+			jugador[0].setTurno(true);
+			jugador[0].getControl().setHabilitarControl(true);
+		}*/
+}
+
+  
+  public Juego(int idJuego){
+	  this.idJuego=idJuego;
+	  jugador = new Jugador[2]; 
+	  mapa = new Mapa(20, 20, 35, 35);
+	  
+	  //iniciarJugador(i, nombreJugador, idJugador, humano, turno, direccionIP);
+	  jugador[0]= new Humano("cristian", 1, true, true, 0,500);
+	  jugador[1]= new Humano("ingrid", 1, true, true, 0,500);
+	  jugadorEnTurno=jugador[0];	
+	  
+	  //new XML(this, mapa, mapa.getCuadro(), this.jugador);
+  }
+  
+  //Constructor de la clase XML
+  public XML(int idJuego) {
+		try {
+			DocumentBuilder builder = this.factory.newDocumentBuilder();
+			DOMImplementation implementacion = builder.getDOMImplementation();
+			this.documento=implementacion.createDocument(null, "xml", null);
+			
+			Element juego = this.documento.createElement("Juego");
+			juego.setAttribute("idJuego", String.valueOf(idJuego));		
+			Element jugadores = this.documento.createElement("jugadores");
+			Element jugador1 = this.documento.createElement("jugador1");
+			jugador1.setAttribute("idJugador", String.valueOf(1));
+			jugador1.setAttribute("nombre", "cristian");
+			jugador1.setAttribute("humano", String.valueOf(true));
+			jugador1.setAttribute("turno", String.valueOf(true));
+			jugador1.setAttribute("presupuesto", String.valueOf(500));
+			jugador1.setAttribute("puntaje", String.valueOf(400));
+			
+			Element jugador2 = this.documento.createElement("jugador2");
+			jugador2.setAttribute("idJugador", String.valueOf(2));
+			jugador2.setAttribute("nombre", "ingrid");
+			jugador2.setAttribute("humano", String.valueOf(true));
+			jugador2.setAttribute("turno", String.valueOf(false));
+			jugador2.setAttribute("presupuesto", String.valueOf(500));
+			jugador2.setAttribute("puntaje", String.valueOf(600));
+			
+			Element mapa = this.documento.createElement("mapa");
+			Text valorMapa = this.documento.createTextNode("Mapa battlezone");
+			
+			this.documento.setXmlVersion("1.0");
+			this.documento.getDocumentElement().appendChild(juego);
+			juego.appendChild(jugadores);
+			jugadores.appendChild(jugador1);
+			jugadores.appendChild(jugador2);
+			juego.appendChild(mapa);
+			mapa.appendChild(valorMapa);
+			
+		} catch (Exception e) {
+			System.err.println("error en xml() "+e.getMessage());
+		}
+		guardarConFormato(documento, "src/almacenamiento/archivosJuego/archivo3.xml");
+	}	
+	
+	//GuardarXML
+						/*	
+					if (this.cuadro[i][j].getUnidad() != null) {
+						System.out.println("cuantas unidades");
+						cuadro[i][j].setAttribute("IdJugador",
+								String.valueOf(this.cuadro[i][j].getUnidad().getIdJugador()));
+						cuadro[i][j].setAttribute("unidadNombre",
+								String.valueOf(this.cuadro[i][j].getUnidad().getNombre()));
+						cuadro[i][j].setAttribute("idUnidad",
+								String.valueOf(this.cuadro[i][j].getUnidad().getIdUnidad()));
+						cuadro[i][j].setAttribute("undidadPosX",
+								String.valueOf(this.cuadro[i][j].getUnidad().getPosX()));
+						cuadro[i][j].setAttribute("undidadPosY",
+								String.valueOf(this.cuadro[i][j].getUnidad().getPosY()));
+						cuadro[i][j].setAttribute("undidadSalud",
+								String.valueOf(this.cuadro[i][j].getUnidad().getSalud()));
+					}*/
+  
+  //cargarXML
+  
+  
+// System.out.println(this.lstNodosHijos_Mapa.item(i).getChildNodes().item(1).getAttributes());
+// System.out.println(i+"
+// "+this.lstNodosHijos_Mapa.item(i).getChildNodes().item(1).getAttributes().getNamedItem("unidadNombre").getNodeValue());
+
+// System.out.println("error "+e.getMessage()+"
+// "+this.lstNodosHijos_Mapa.item(i).getAttributes().getNamedItem("unidadNombre").getNodeValue());
+
+/*
+ * for (int i = 0; i < this.lstNodosHijos_Cuadro.getLength(); i++) {
+ * System.out.println(i);
+ * //System.out.println(i+" "+lstNodosHijos_Cuadro.item(i).getAttributes().
+ * getNamedItem("unidadNombre")); }
+ */
+/*
+ * for (int i = 0; i < lstNodosHijos_Jugadores.getLength(); i++) { //Node
+ * unNodoHijo=listaNodosHijos.item(i); //NamedNodeMap atributos =
+ * unNodoHijo.getAttributes();
+ * //System.out.println(contador+" "+nodoRaiz.getNodeName()+" "+listaNodosHijos.
+ * item(i).getNodeName());
+ * if(lstNodosHijos_Jugadores.item(i).getNodeName()!="#text"){
+ * System.out.println(i+" "+lstNodosHijos_Jugadores.item(i).getNodeName()); } /*
+ * try { Node unAtributo=atributos.getNamedItem("nombre"); String
+ * valorAtributo=unAtributo.getNodeValue(); } catch (Exception e) {
+ * System.out.println("error en leer atributo "+e.getMessage()); }
+ */
+
+// System.out.println("nombre jugador 1
+// "+lstNodosHijos_Jugadores.item(1).getAttributes().getNamedItem("nombre").getNodeValue());
+
+/*
+ * try{ DocumentBuilderFactory domFactory =
+ * DocumentBuilderFactory.newInstance(); domFactory.setNamespaceAware(true);
+ * DocumentBuilder builder = domFactory.newDocumentBuilder(); Document doc =
+ * builder.parse(new InputSource(new StringReader(xml)));
+ * 
+ * NodeList todosContactos = doc.getElementsByTagName("contacto"); Node
+ * unContacto = todosContactos.item(0);
+ * 
+ * if (unContacto.getNodeType() == Node.ELEMENT_NODE){ Element elemento =
+ * (Element) unContacto; System.out.println(elemento.getAttribute("tipo"));
+ * NodeList lista =
+ * elemento.getElementsByTagName("nombre").item(0).getChildNodes(); Node valor =
+ * (Node) lista.item(0); System.out.println( valor.getNodeValue()); }
+ * }catch(Exception ex){ ex.printStackTrace(); }
+ */
+
+/*
+ * 
+ * private NodeList lstNodosHijos_Raiz; private NodeList lstNodosHijos_Juego;
+ * private NodeList lstNodosHijos_Jugadores; private NodeList
+ * lstNodosHijos_Mapa; private NodeList lstNodosHijos_Cuadro;
+ * 
+ * 
+ * this.lstNodosHijos_Raiz = this.nodoRaiz.getChildNodes();
+ * this.lstNodosHijos_Juego = this.lstNodosHijos_Raiz.item(1).getChildNodes();
+ * this.lstNodosHijos_Jugadores =
+ * this.lstNodosHijos_Juego.item(1).getChildNodes();
+ * 
+ * this.lstNodosHijos_Mapa = this.lstNodosHijos_Juego.item(3).getChildNodes();
+ * 
+ * 
+ * for (int i = 0; i < this.lstNodosHijos_Mapa.getLength(); i++) { if (i % 2 !=
+ * 0) { if
+ * (this.lstNodosHijos_Mapa.item(i).getAttributes().getNamedItem("pisoOcupado").
+ * getNodeValue() .equals("true")) { try { lstNodosHijos_Cuadro.item(i)
+ * .appendChild(this.lstNodosHijos_Mapa.item(i).getChildNodes().item(1)); }
+ * catch (Exception e) { System.out.println("error " + e.getMessage()); } } } }
+ * 
+ */
+ 
+ 
+ //validarAtaque2 de clase Unidad:
+ 
+ public boolean validarAtaque2(Unidad unidad){
+	  
+	  int posX_Actual=this.posX;
+	  int posY_Actual=this.posY;
+	  int posX_Enemigo=unidad.getPosX();
+	  int posY_Enemigo=unidad.getPosY();
+	  int alcance = this.alcanceFuego;
+	  
+	  System.out.println("pos actual ("+posX_Actual+","+posY_Actual+")");
+	  System.out.println("pos recibido ("+posX_Enemigo+","+posY_Enemigo+")");	  
+	  
+	  if(			 						
+			(Math.abs(posX_Actual-posX_Enemigo) == Math.abs(posY_Actual-posY_Enemigo))&&(Math.abs(posX_Actual-posX_Enemigo)<=alcance)
+		){
+		  System.out.println("valido avance diagonal");
+		  return true;
+	  }
+		  
+	  else if(
+			  	(posY_Actual>posY_Enemigo && posY_Actual-posY_Enemigo<=alcance && posX_Actual==posX_Enemigo) ||//movimiento izquierda
+				(posY_Actual<posY_Enemigo && posY_Enemigo-posY_Actual<=alcance && posX_Actual==posX_Enemigo)||//movimiento derecha
+				(posX_Actual>posX_Enemigo && posX_Actual-posX_Enemigo<=alcance && posY_Actual==posY_Enemigo)||//movimiento arriba
+				(posX_Actual<posX_Enemigo && posX_Enemigo-posX_Actual<=alcance && posY_Actual==posY_Enemigo)//movimiento abajo								
+			  )
+			  			  
+	  {
+		  System.out.println("valido avance lateral");
+		  return true;
+	  }else{
+		  System.out.println("no valido avance");
+		  return false;	
+	  }
+  }
+  //metodo seleccionarUnidad de Maquina
+  public static void seleccionarUnidad() {
+		System.out.println("entro a seleccionar unidad maquina");
+
+		if (!Mapa.getSeleccion()) {
+
+			for (int i = 0; i < Mapa.getMapa().cuadro.length; i++) {
+				for (int j = 0; j < Mapa.getMapa().cuadro.length; j++) {
+
+					if (Mapa.getMapa().cuadro[i][j].getPisoOcupado()) {
+						if (Mapa.getMapa().cuadro[i][j].getUnidad().getIdJugador() == 2) {
+
+							clickearMapa(Mapa.getMapa().cuadro[i][j]);
+							pasos = Mapa.getMapa().getUnidadSeleccionada().getDesplazamiento();
+
+							atacarEnemigos();
+							j = Mapa.getMapa().cuadro.length;
+							i = Mapa.getMapa().cuadro.length;
+
+						}
+					}
+				}
+			}
+		} else {
+			//seleccionarUnidad();
+		}
+	}
+  
+  //atacar enemigos en Maquina
+  
+  	
+
+	public static void atacarEnemigos() {
+		System.out.println("Maquina: atacar enemigos");
+		for (int i = 0; i < Mapa.getMapa().getCuadro().length; i++) {
+			for (int j = 0; j < Mapa.getMapa().getCuadro().length; j++) {
+
+				if (Mapa.getMapa().getCuadro()[i][j].getPisoOcupado()) {
+					
+					if (Mapa.getMapa().getCuadro()[i][j].getUnidad().getIdJugador() == 1) {
+
+						if (Mapa.getMapa().getUnidadSeleccionada()
+								.validarAtaque(Mapa.getMapa().getCuadro()[i][j].getUnidad()) > 0
+								|| Mapa.getMapa().getUnidadSeleccionada()
+										.validarAtaque(Mapa.getMapa().getCuadro()[i][j].getUnidad()) < 6) {
+
+							clickearMapa(Mapa.getMapa().getCuadro()[i][j]);
+							j = Mapa.getMapa().getCuadro().length;
+							i = Mapa.getMapa().getCuadro().length;
+						}
+					} 
+				}else {
+					moverUnidad();
+				}
+			}
+		}
+	}
+
+	

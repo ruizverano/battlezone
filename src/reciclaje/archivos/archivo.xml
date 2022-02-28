@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xml>
+   <Juego idJuego="1">
+      <jugadores>
+         <jugador1 humano="true" idJugador="1" nombre="cristian" presupuesto="500" puntaje="400" turno="true"/>
+         <jugador2 humano="true" idJugador="2" nombre="ingrid" presupuesto="500" puntaje="600" turno="false"/>
+      </jugadores>
+      <mapa>Mapa battlezone</mapa>
+   </Juego>
+</xml>
+
